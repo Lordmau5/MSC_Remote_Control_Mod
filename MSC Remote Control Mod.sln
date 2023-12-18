@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34330.188
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MSC Remote Control Mod", "MSC Remote Control Mod.csproj", "{BEDE6755-01D4-4B04-9F9F-45B0A8E7D06A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BEDE6755-01D4-4B04-9F9F-45B0A8E7D06A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BEDE6755-01D4-4B04-9F9F-45B0A8E7D06A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BEDE6755-01D4-4B04-9F9F-45B0A8E7D06A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BEDE6755-01D4-4B04-9F9F-45B0A8E7D06A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {38D2A3DE-9D15-49C9-AA08-4C3555CE90FA}
+	EndGlobalSection
+EndGlobal
