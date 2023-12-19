@@ -69,6 +69,8 @@
   <ItemGroup>
     <Compile Include="MscRemoteControlMod.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="src\CarPart.cs" />
+    <Compile Include="src\PartsDatabase.cs" />
     <Compile Include="src\PlayerNeedsHandler.cs" />
     <Compile Include="src\ResetHandler.cs" />
     <Compile Include="src\VehicleControlsHandler.cs" />

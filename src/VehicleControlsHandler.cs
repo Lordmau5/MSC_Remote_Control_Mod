@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Linq;
 using HutongGames.PlayMaker;
+using MscLib;
 using Newtonsoft.Json;
 using UnityEngine;
 
@@ -115,6 +117,22 @@ namespace MSC_Remote_Control_Mod
                         DateTime.Now.AddSeconds(controlsMsg.ResetAfter),
                         () => _brakeModifier = 0.0f
                     );
+                    return true;
+                }
+                case "fuel":
+                {
+                    var satsuma = GameObject.Find("SATSUMA(557kg, 248)");
+                    
+                    // Fuel Tank
+                    var fuelTankFsm = PlayMakerFSM.FindFsmOnGameObject(
+                        PartsDatabase.Mechanics.First(t => t.Name == "FuelTank").PartsDbEntry, "Data");
+
+                    fuelTankFsm.FsmVariables.FindFsmFloat("FuelLevel").Value = Mathf.Clamp(
+                        controlsMsg.Value, 
+                        0, 
+                        fuelTankFsm.FsmVariables.FindFsmFloat("MaxCapacity").Value
+                    );
+                    
                     return true;
                 }
             }

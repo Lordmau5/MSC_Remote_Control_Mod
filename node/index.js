@@ -97,6 +97,14 @@ wss.on('connection', function connection(ws) {
 				sendVehicle(ws, 'brake', 1);
 				return;
 			}
+			case 'no_fuel': {
+				sendVehicle(ws, 'fuel', 0);
+				return;
+			}
+			case 'max_fuel': {
+				sendVehicle(ws, 'fuel', 999999999);
+				return;
+			}
 			default: {
 				console.log('Unknown request', msg);
 				return;

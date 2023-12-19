@@ -61,6 +61,9 @@ namespace MSC_Remote_Control_Mod
             
             Settings.AddButton(this, "brake_reset", "Brake Reset", () => WebSocketClient.Send("brake_reset"));
             Settings.AddButton(this, "brake_max", "Brake Max", () => WebSocketClient.Send("brake_max"));
+            
+            Settings.AddButton(this, "no_fuel", "No Fuel (Satsuma)", () => WebSocketClient.Send("no_fuel"));
+            Settings.AddButton(this, "max_fuel", "Max Fuel (Satsuma)", () => WebSocketClient.Send("max_fuel"));
         }
 
         private void ReconnectWebSocket()
