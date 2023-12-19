@@ -69,11 +69,27 @@ namespace MSC_Remote_Control_Mod
             {
                 this.Send(message);
             }
+
+            this.messageBuffer.Clear();
         }
 
-        private void WebSocket_Error(object sender, ErrorEventArgs e) => Console.WriteLine($"WebSocket error: {e.Exception.Message}");
+        private void Reconnect()
+        {
+            System.Threading.Thread.Sleep(3000);
+            webSocket.Connect();
+        }
 
-        private void WebSocket_Closed(object sender, EventArgs e) => Console.WriteLine("WebSocket closed.");
+        private void WebSocket_Error(object sender, ErrorEventArgs e)
+        {
+            Console.WriteLine($"WebSocket error: {e.Exception.Message} - Reconnecting in 3 seconds");
+            Reconnect();
+        }
+
+        private void WebSocket_Closed(object sender, EventArgs e)
+        {
+            Console.WriteLine("WebSocket closed. Reconnecting in 3 seconds");
+            Reconnect();
+        }
 
         private void WebSocket_MessageReceived(object sender, MessageEventArgs e)
         {
