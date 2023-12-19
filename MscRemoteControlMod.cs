@@ -51,6 +51,9 @@ namespace MSC_Remote_Control_Mod
             Settings.AddButton(this, "request_dirtiness", "Set Max Dirtiness", () => this.webSocketClient.Send("request_dirtiness"));
             Settings.AddButton(this, "request_drunk", "Set Max Alcohol", () => this.webSocketClient.Send("request_drunk"));
             
+            Settings.AddButton(this, "request_swear", "Swear", () => this.webSocketClient.Send("request_swear"));
+            Settings.AddButton(this, "request_blind", "Set Blind", () => this.webSocketClient.Send("request_blind"));
+            
             Settings.AddHeader(this, "Vehicle");
             Settings.AddButton(this, "steer_reset", "Steer Reset", () => this.webSocketClient.Send("steer_reset"));
             Settings.AddButton(this, "steer_left", "Steer Left", () => this.webSocketClient.Send("steer_left"));
@@ -99,6 +102,7 @@ namespace MSC_Remote_Control_Mod
 
         private void Mod_FixedUpdate()
         {
+            PlayerNeedsHandler.OnUpdate();
             VehicleControlsHandler.OnUpdate();
         }
     }

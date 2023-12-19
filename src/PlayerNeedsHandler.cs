@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
 using MSCLoader;
 using Newtonsoft.Json;
+using UnityEngine;
 
 namespace MSC_Remote_Control_Mod
 {
@@ -74,9 +72,39 @@ namespace MSC_Remote_Control_Mod
                     SetAndResetValue("PlayerDrunkAdjusted", needsMsg);
                     return true;
                 }
+                case "swear":
+                {
+                    _swearFsm.SendEvent("SWEARING");
+                    return true;
+                }
+                case "blind":
+                {
+                    _blindnessFsm.SendEvent("BLIND");
+                    ResetHandler.ResetAfter(
+                        DateTime.Now.AddSeconds(needsMsg.ResetAfter),
+                        () => _blindnessFsm.SendEvent("FINISHED")
+                    );
+                    return true;
+                }
             }
 
             return false;
+        }
+
+        private static PlayMakerFSM _swearFsm;
+        private static GameObject _camera;
+        private static PlayMakerFSM _blindnessFsm;
+
+        private static void EnsureFsMs()
+        {
+            _swearFsm = _swearFsm ? _swearFsm : GameObject.Find("PLAYER/Pivot/AnimPivot/Camera/FPSCamera/SpeakDatabase").GetComponent<PlayMakerFSM>();
+            _camera = _camera ? _camera : GameObject.Find("PLAYER/Pivot/AnimPivot/Camera/FPSCamera/FPSCamera");
+            _blindnessFsm = _blindnessFsm ? _blindnessFsm : _camera.GetPlayMaker("Blindness");
+        }
+        
+        public static void OnUpdate()
+        {
+            EnsureFsMs();
         }
     }
 }

@@ -58,7 +58,15 @@ wss.on('connection', function connection(ws) {
 				return;
 			}
 			case 'request_drunk': {
-				sendNeed(ws, 'drunk', 4.0, 10);
+				sendNeed(ws, 'drunk', 4.0, 5);
+				return;
+			}
+			case 'request_swear': {
+				sendNeed(ws, 'swear', 1);
+				return;
+			}
+			case 'request_blind': {
+				sendNeed(ws, 'blind', 1, 3);
 				return;
 			}
 			case 'steer_reset': {
