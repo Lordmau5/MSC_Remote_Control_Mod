@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Linq;
+using HutongGames.PlayMaker;
+using HutongGames.PlayMaker.Actions;
 using MSCLoader;
 using Newtonsoft.Json;
 using UnityEngine;
@@ -79,11 +82,21 @@ namespace MSC_Remote_Control_Mod
                 }
                 case "blind":
                 {
-                    _blindnessFsm.SendEvent("BLIND");
+                    var blindnessFsm = _camera.GetPlayMaker("Blindness");
+                    
+                    var blindnessState = blindnessFsm.GetState("Blindness");
+                    var easeFloat = blindnessState.GetAction<EaseFloat>(3);
+                    easeFloat.Enabled = false;
+
+                    blindnessFsm.SendEvent("BLIND");
+                    blindnessFsm.GetVariable<FsmFloat>("Intensity").Value = 500;
                     ResetHandler.ResetAfter(
                         DateTime.Now.AddSeconds(needsMsg.ResetAfter),
-                        () => _blindnessFsm.SendEvent("FINISHED")
-                    );
+                        () =>
+                        {
+                            blindnessFsm.SendEvent("FINISHED");
+                            easeFloat.Enabled = true;
+                        });
                     return true;
                 }
             }
@@ -93,13 +106,11 @@ namespace MSC_Remote_Control_Mod
 
         private static PlayMakerFSM _swearFsm;
         private static GameObject _camera;
-        private static PlayMakerFSM _blindnessFsm;
 
         private static void EnsureFsMs()
         {
             _swearFsm = _swearFsm ? _swearFsm : GameObject.Find("PLAYER/Pivot/AnimPivot/Camera/FPSCamera/SpeakDatabase").GetComponent<PlayMakerFSM>();
             _camera = _camera ? _camera : GameObject.Find("PLAYER/Pivot/AnimPivot/Camera/FPSCamera/FPSCamera");
-            _blindnessFsm = _blindnessFsm ? _blindnessFsm : _camera.GetPlayMaker("Blindness");
         }
         
         public static void OnUpdate()

@@ -66,7 +66,7 @@ wss.on('connection', function connection(ws) {
 				return;
 			}
 			case 'request_blind': {
-				sendNeed(ws, 'blind', 1, 3);
+				sendNeed(ws, 'blind', 1, 5);
 				return;
 			}
 			case 'steer_reset': {

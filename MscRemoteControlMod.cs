@@ -10,9 +10,8 @@ namespace MSC_Remote_Control_Mod
         public override string Version => "1.0"; // Version
         public override string Description => "A mod to remotely control aspects of the game through a websocket."; // Short description of your mod
 
-        private bool isReconnecting = false;
-        private WebSocketClient webSocketClient;
-
+        private bool _isReconnecting = false;
+        
         public override void ModSetup()
         {
             this.SetupFunction(Setup.OnLoad, this.Mod_OnLoad);
@@ -21,18 +20,16 @@ namespace MSC_Remote_Control_Mod
             this.SetupFunction(Setup.ModSettings, this.Mod_Settings);
             this.SetupFunction(Setup.FixedUpdate, this.Mod_FixedUpdate);
 
-            this.webSocketClient = new WebSocketClient("ws://localhost:8050");
-
-            this.webSocketClient.OnMessageReceived += this.OnMessageReceived;
-            this.webSocketClient.OnOpened += this.OnWebSocketOpened;
+            WebSocketClient.OnMessageReceived += this.OnMessageReceived;
+            WebSocketClient.OnOpened += this.OnWebSocketOpened;
         }
 
         private void OnWebSocketOpened(object sender)
         {
-            if (!this.isReconnecting) return;
+            if (!this._isReconnecting) return;
 
             ModUI.ShowMessage("WebSocket successfully reconnected.", "WebSocket connected");
-            this.isReconnecting = false;
+            this._isReconnecting = false;
         }
 
         private void Mod_Settings()
@@ -40,41 +37,39 @@ namespace MSC_Remote_Control_Mod
             // All settings should be created here. 
             // DO NOT put anything that isn't settings or keybinds in here!
             Settings.AddHeader(this, "WebSocket");
-            Settings.AddButton(this, "reconnect_websocket", "Reconnect WebSocket", this.ReconnectWebSocket);
+            Settings.AddButton(this, "reconnect_websocket", "Reconnect WebSocket", ReconnectWebSocket);
 
             Settings.AddHeader(this, "Stats");
-            Settings.AddButton(this, "request_thirst", "Set Max Thirst", () => this.webSocketClient.Send("request_thirst"));
-            Settings.AddButton(this, "request_hunger", "Set Max Hunger", () => this.webSocketClient.Send("request_hunger"));
-            Settings.AddButton(this, "request_stress", "Set Max Stress", () => this.webSocketClient.Send("request_stress"));
-            Settings.AddButton(this, "request_urine", "Set Max Urine", () => this.webSocketClient.Send("request_urine"));
-            Settings.AddButton(this, "request_fatigue", "Set Max Fatigue", () => this.webSocketClient.Send("request_fatigue"));
-            Settings.AddButton(this, "request_dirtiness", "Set Max Dirtiness", () => this.webSocketClient.Send("request_dirtiness"));
-            Settings.AddButton(this, "request_drunk", "Set Max Alcohol", () => this.webSocketClient.Send("request_drunk"));
+            Settings.AddButton(this, "request_thirst", "Set Max Thirst", () => WebSocketClient.Send("request_thirst"));
+            Settings.AddButton(this, "request_hunger", "Set Max Hunger", () => WebSocketClient.Send("request_hunger"));
+            Settings.AddButton(this, "request_stress", "Set Max Stress", () => WebSocketClient.Send("request_stress"));
+            Settings.AddButton(this, "request_urine", "Set Max Urine", () => WebSocketClient.Send("request_urine"));
+            Settings.AddButton(this, "request_fatigue", "Set Max Fatigue", () => WebSocketClient.Send("request_fatigue"));
+            Settings.AddButton(this, "request_dirtiness", "Set Max Dirtiness", () => WebSocketClient.Send("request_dirtiness"));
+            Settings.AddButton(this, "request_drunk", "Set Max Alcohol", () => WebSocketClient.Send("request_drunk"));
             
-            Settings.AddButton(this, "request_swear", "Swear", () => this.webSocketClient.Send("request_swear"));
-            Settings.AddButton(this, "request_blind", "Set Blind", () => this.webSocketClient.Send("request_blind"));
+            Settings.AddButton(this, "request_swear", "Swear", () => WebSocketClient.Send("request_swear"));
+            Settings.AddButton(this, "request_blind", "Set Blind", () => WebSocketClient.Send("request_blind"));
             
             Settings.AddHeader(this, "Vehicle");
-            Settings.AddButton(this, "steer_reset", "Steer Reset", () => this.webSocketClient.Send("steer_reset"));
-            Settings.AddButton(this, "steer_left", "Steer Left", () => this.webSocketClient.Send("steer_left"));
-            Settings.AddButton(this, "steer_right", "Steer Right", () => this.webSocketClient.Send("steer_right"));
+            Settings.AddButton(this, "steer_reset", "Steer Reset", () => WebSocketClient.Send("steer_reset"));
+            Settings.AddButton(this, "steer_left", "Steer Left", () => WebSocketClient.Send("steer_left"));
+            Settings.AddButton(this, "steer_right", "Steer Right", () => WebSocketClient.Send("steer_right"));
             
-            Settings.AddButton(this, "accel_reset", "Accel Reset", () => this.webSocketClient.Send("accel_reset"));
-            Settings.AddButton(this, "accel_max", "Accel Max", () => this.webSocketClient.Send("accel_max"));
+            Settings.AddButton(this, "accel_reset", "Accel Reset", () => WebSocketClient.Send("accel_reset"));
+            Settings.AddButton(this, "accel_max", "Accel Max", () => WebSocketClient.Send("accel_max"));
             
-            Settings.AddButton(this, "brake_reset", "Brake Reset", () => this.webSocketClient.Send("brake_reset"));
-            Settings.AddButton(this, "brake_max", "Brake Max", () => this.webSocketClient.Send("brake_max"));
+            Settings.AddButton(this, "brake_reset", "Brake Reset", () => WebSocketClient.Send("brake_reset"));
+            Settings.AddButton(this, "brake_max", "Brake Max", () => WebSocketClient.Send("brake_max"));
         }
 
         private void ReconnectWebSocket()
         {
-            this.isReconnecting = true;
-
-            this.webSocketClient?.Close();
-            this.SetupWebSocket();
+            _isReconnecting = true;
+            WebSocketClient.Reconnect();
         }
 
-        private void SetupWebSocket() => this.webSocketClient.Connect();
+        private void SetupWebSocket() => WebSocketClient.Setup("ws://localhost:8050");
 
         private void Mod_OnLoad() => this.SetupWebSocket();
 
@@ -85,9 +80,8 @@ namespace MSC_Remote_Control_Mod
             
             if (msg.Type == "ping")
             {
-                this.webSocketClient.Send($"Returning: {msg.Message}");
+                WebSocketClient.Send($"Returning: {msg.Message}");
             }
-            // Also ask on the Discord how to modify the car steering perhaps?
         }
 
         private void Mod_OnGUI()
@@ -97,7 +91,6 @@ namespace MSC_Remote_Control_Mod
         private void Mod_Update()
         {
             // Update is called once per frame
-            // VehicleControlsHandler.OnUpdate();
         }
 
         private void Mod_FixedUpdate()
